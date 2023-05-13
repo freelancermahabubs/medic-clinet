@@ -10,7 +10,7 @@ const NavbarServices = () => {
       .catch((error) => console.log(error));
   };
   return (
-    <div className="navbar sticky top-0 z-[99999] lg:bg-base-500 px-16 shadow-md">
+    <div className="navbar sticky top-0 z-[500] lg:bg-base-500 px-16 shadow-md">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost lg:hidden">

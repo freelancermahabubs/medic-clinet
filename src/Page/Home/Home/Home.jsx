@@ -10,7 +10,7 @@ const Home = () => {
       style={{
         backgroundImage: ` url(${banner})`,
         backgroundRepeat: "no-repeat",
-        height: "70vh",
+        minHeight: "70vh",
         width: "700",
         backgroundSize: "cover",
       }}
