@@ -26,7 +26,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/book/:id",
-        element: <BookService />,
+        element: (
+          <PrivateRoute>
+            <BookService />
+          </PrivateRoute>
+        ),
         loader: ({ params }) =>
           fetch(`https://medic-server.vercel.app/medices/${params.id}`),
       },

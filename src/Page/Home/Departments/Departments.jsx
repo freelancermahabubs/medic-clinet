@@ -2,18 +2,32 @@ import { useEffect, useState } from "react";
 import DepartmentCard from "./DepartmentCard";
 import { fadeIn } from "../../../variants";
 import { motion } from "framer-motion";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 const Departments = () => {
   const [medicines, setMedicines] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [viewAllDepartments, setViewAllDepartments] = useState(false);
   useEffect(() => {
-    fetch("https://medic-server.vercel.app/medices")
-      .then((res) => res.json())
-      .then((data) => setMedicines(data));
+    const loadAllData = async () => {
+      try {
+        const jsonData = "https://medic-server.vercel.app/medices";
+        const res = await fetch(jsonData);
+        const data = await res.json();
+        setMedicines(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadAllData();
   }, []);
   const handleSellAllDepartments = () => {
     setViewAllDepartments(true);
   };
   const medicinesData = viewAllDepartments ? medicines : medicines.slice(0, 6);
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
   return (
     <div className="bg-gray-100 pt-12">
       <motion.div

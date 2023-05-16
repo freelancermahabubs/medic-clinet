@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loader, setLoader] = useState(true);
   const googleProvider = new GoogleAuthProvider();
-  console.log(user);
+  // console.log(user);
   //create user
   const createUser = (email, password) => {
     setLoader(true);
@@ -44,16 +44,6 @@ const AuthProvider = ({ children }) => {
     return sendPasswordResetEmail(auth, email);
   };
 
-  //getUser
-
-  useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoader(false);
-    });
-    return () => unSubscribe();
-  }, []);
-
   // log out
   const logOut = () => {
     setLoader(true);
@@ -64,6 +54,36 @@ const AuthProvider = ({ children }) => {
     setLoader(true);
     return signInWithPopup(auth, googleProvider);
   };
+
+  //getUser
+
+  useEffect(() => {
+    const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoader(false);
+      if (createUser && currentUser?.email) {
+        const loggedUser = {
+          email: currentUser?.email,
+        };
+        fetch("https://medic-server.vercel.app/jwt", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(loggedUser),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("jwt res", data);
+            // warning: Local storage is not the best (second best place) to store access token
+            localStorage.setItem("medic-access-token", data.token);
+          });
+      } else {
+        localStorage.removeItem("medic-access-token");
+      }
+    });
+    return () => unSubscribe();
+  }, []);
 
   const authInfo = {
     user,

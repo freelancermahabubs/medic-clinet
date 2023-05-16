@@ -21,8 +21,8 @@ const Login = () => {
     // console.log(email, password);
 
     loginUser(email, password)
-      .then((res) => {
-        const currentUser = res.user;
+      .then((result) => {
+        const currentUser = result.user;
         console.log(currentUser);
         navigate(from, { replace: true });
         toast.success("login success");

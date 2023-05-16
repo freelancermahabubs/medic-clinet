@@ -3,15 +3,22 @@ import React, { useContext } from "react";
 import googleIcon from "../../assets/google.png";
 import facebookIcon from "../../assets/fb.png";
 import { AuthContext } from "../../Provider/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 const SocialLogin = () => {
   const { googleSignIn } = useContext(AuthContext);
+  const location = useLocation();
   const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
 
-  const handleGogleSignIN = () => {
-    googleSignIn().then((res) => {
-      navigate("/", { replace: true });
-    });
+  const handleGoogleSignIN = () => {
+    googleSignIn()
+      .then((result) => {
+        console.log(result.user);
+        navigate(from, { replace: true });
+        toast.success("login success");
+      })
+      .catch((error) => console.log(error));
   };
   return (
     <div className="mb-5">
@@ -23,7 +30,7 @@ const SocialLogin = () => {
           </div>
         </button>
         <button
-          onClick={handleGogleSignIN}
+          onClick={handleGoogleSignIN}
           className="flex rounded-full border-2 p-3 items-center w-full"
         >
           <img className="w-8 h-8" src={googleIcon} alt="" />

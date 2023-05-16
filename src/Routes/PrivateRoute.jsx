@@ -5,15 +5,11 @@ import LoadingSpinner from "../Page/LoadingSpinner/LoadingSpinner";
 import { AuthContext } from "../Provider/AuthProvider";
 
 const PrivateRoute = ({ children }) => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loader } = useContext(AuthContext);
   let location = useLocation();
 
-  if (loading) {
-    return (
-      <div>
-        <LoadingSpinner />
-      </div>
-    );
+  if (loader) {
+    return <LoadingSpinner />;
   }
   if (user) {
     return children;

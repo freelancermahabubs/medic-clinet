@@ -3,18 +3,31 @@ import { useContext, useEffect, useState } from "react";
 import BookingRow from "./BookingRow";
 import { AuthContext } from "../../Provider/AuthProvider";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const Bookings = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
+  const token = localStorage.getItem("medic-access-token");
   const url = `https://medic-server.vercel.app/bookingss?email=${user?.email}`;
   useEffect(() => {
-    fetch(url)
+    if (!token) return;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
-        setBookings(data);
+        if (!data.error) {
+          setBookings(data);
+        } else {
+          navigate("/");
+        }
       });
-  }, [url]);
+  }, [url, navigate, token]);
 
   const handleDelete = (id) => {
     const proceed = confirm("Are You Sure you wan to delete");
@@ -39,7 +52,7 @@ const Bookings = () => {
     fetch(`https://medic-server.vercel.app/bookingss/${id}`, {
       method: "PATCH",
       headers: {
-        "content-type": "Application/json",
+        "content-type": "application/json",
       },
       body: JSON.stringify({ status: "pending" }),
     })
